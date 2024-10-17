@@ -40,6 +40,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Apply migrations
+      working-directory: ./employee_management_project
       env:
         DATABASE_URL: postgres://django_user:django_pass@localhost:5432/django_db
       run: |
