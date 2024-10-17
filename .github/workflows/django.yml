@@ -43,5 +43,5 @@ jobs:
     - name: Run PEP8 linting
       run: |
         pip install flake8
-        flake8 Edi_Assignment/employee_management_project/
+        flake8 Edi_Assignment/ --exclude .git,__pycache__,migrations,venv,manage.py
 
