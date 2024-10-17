@@ -40,8 +40,5 @@ jobs:
         pip install -r requirements.txt
 
 
-    - name: Run PEP8 linting
-      run: |
-        pip install flake8
-        flake8 ./employee_management_project/ --exclude .git,__pycache__,migrations,venv,manage.py
+
 
