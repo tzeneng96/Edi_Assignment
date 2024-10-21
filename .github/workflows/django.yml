@@ -41,7 +41,8 @@ jobs:
 
     - name: Running Test Cases 
       run: |
-        python src/employee_management_project/manage.py test
+        cd ../employee_management_project
+        python manage.py test
 
 
 
