@@ -45,11 +45,19 @@ jobs:
           pwd
           echo "Contents:"
           ls -la
+
+    - name: Check Directory Before CD
+      run: |
+          echo "Checking if employee_management_project exists..."
+          if [ -d "employee_management_project" ]; then
+            echo "Directory exists."
+          else
+            echo "Directory does not exist."
+          fi
           
     - name: Running Test Cases 
       run: |
-        cd employee_management_project
-        python manage.py test
+        python employee_management_project/manage.py test
 
 
 
