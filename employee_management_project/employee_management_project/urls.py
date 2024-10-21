@@ -19,23 +19,41 @@ from django.urls import path, re_path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+from rest_framework.permissions import AllowAny
 
+
+
+# Define Basic Auth Parameter
+basic_auth = openapi.Parameter(
+    'Authorization',  # Parameter name
+    openapi.IN_HEADER,  # In the header
+    description="Basic Authentication. Example: 'Basic <base64-encoded-credentials>'",
+    type=openapi.TYPE_STRING,
+    required=False,  # Not required for the documentation to display
+)
+
+# Set up Schema View
 schema_view = get_schema_view(
     openapi.Info(
-        title="Employee App Api",
+        title="Employee Management Api",
         default_version='v1',
-        description="API documentation for your Django application",
+        description="API for employee management",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="test@example.com"),
+        contact=openapi.Contact(email="contact@hiew.local"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
-    permission_classes=(permissions.AllowAny,),
+    permission_classes=(AllowAny,),
 )
 
+# Add Basic Auth Parameter to Schema
+schema_view._swagger_schema = lambda: {
+    'parameters': [basic_auth],
+}
 
 urlpatterns = [
-    path('', include('employee_app.urls')),
+    path('', include('employee_app.urls')),\
     path('admin/', admin.site.urls),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
+
