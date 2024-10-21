@@ -22,20 +22,17 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Employee App Api",
+        title="Employee Management API",
         default_version='v1',
-        description="API documentation for your Django application",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="test@example.com"),
-        license=openapi.License(name="BSD License"),
+        description="API with JWT Authentication",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
 
-
 urlpatterns = [
-    path('', include('employee_app.urls')),
+    path('', include('employee_app.urls')),\
     path('admin/', admin.site.urls),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
+
