@@ -55,9 +55,11 @@ jobs:
             echo "Directory does not exist."
           fi
           
+    - name: Run Migrations
+      run: python employee_management_project/manage.py migrate
+      
     - name: Running Test Cases 
       run: |
-        python employee_management_project/manage.py check
         python employee_management_project/manage.py test
 
 
