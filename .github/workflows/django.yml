@@ -69,9 +69,17 @@ jobs:
         python employee_management_project/manage.py makemigrations  # Ensure migrations are created
         python employee_management_project/manage.py migrate --fake-initial
       
-    - name: Running Test Cases 
+    - name: Run tests with coverage
       run: |
-        python employee_management_project/manage.py test employee_app --verbosity=2
+        coverage run employee_management_project/manage.py test
+        coverage report  # Optional to display in logs
+        coverage html  # Generate HTML report
+    
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: htmlcov/
 
 
 
