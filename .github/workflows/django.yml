@@ -54,7 +54,16 @@ jobs:
           else
             echo "Directory does not exist."
           fi
-          
+
+    - name: Wait for Postgres to be ready
+      run: |
+        echo "Waiting for PostgreSQL to be ready..."
+        until pg_isready -h localhost -U django_user -d django_db; do
+          echo "Postgres is unavailable - sleeping"
+          sleep 1
+        done
+        echo "Postgres is up - continuing"
+        
     - name: Run Migrations
       run: python employee_management_project/manage.py migrate
       
