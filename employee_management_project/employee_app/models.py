@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.db import models
+from django.forms import ValidationError
 
 # Create your models here.
 class Team(models.Model):
@@ -18,12 +19,12 @@ class Employee(models.Model):
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
     is_team_leader = models.BooleanField(default=False)
 
-    def calculate_monthly_pay(self, hours_worked):
+    def calculate_monthly_pay(self):
         """Calculate monthly pay with a 10% bonus if the employee is a team leader."""
         total_pay = Decimal('0.00')
         for arrangement in self.work_arrangements.all():
             hours_worked = 40 * (arrangement.percentage / Decimal('100')) * 4  # Monthly hours based on percentage
-            pay = self.hourly_rate * hours_worked
+            pay = Decimal(self.hourly_rate) * hours_worked
             
             if self.is_team_leader:
                 pay *= Decimal('1.10')  # 10% bonus for team leaders
@@ -64,6 +65,23 @@ class WorkArrangement(models.Model):
         """Calculate weekly hours based on the percentage of full-time work."""
         return (self.percentage / 100) * self.FULL_TIME_HOURS
 
+    def save(self, *args, **kwargs):
+        # Exclude the current arrangement if it's being updated
+        other_arrangements = self.employee.work_arrangements.exclude(pk=self.pk)
+
+        # Sum percentages of other work arrangements
+        total_percentage = sum(arrangement.percentage for arrangement in other_arrangements)
+
+        # Add the percentage of the current (new or updated) arrangement
+        total_percentage += self.percentage
+
+        if total_percentage > 100:
+            raise ValidationError("Total work percentage cannot exceed 100%.")
+        
+        super().save(*args, **kwargs)
+
     def __str__(self):
         arrangement_type = "Full-Time" if self.percentage == 100 else f"Part-Time ({self.percentage}%)"
         return f"{self.employee.name}: {arrangement_type}"
+
+        
