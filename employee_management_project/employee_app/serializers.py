@@ -38,7 +38,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def get_monthly_pay(self, obj):
         # Assuming a standard of 160 working hours per month (40h/week * 4 weeks)
-        return obj.calculate_monthly_pay(160)
+        return obj.calculate_monthly_pay()
 
 
 class TeamLeaderSerializer(serializers.ModelSerializer):
