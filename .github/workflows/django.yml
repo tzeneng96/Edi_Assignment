@@ -71,7 +71,7 @@ jobs:
       
     - name: Running Test Cases 
       run: |
-        python employee_management_project/manage.py test
+        python employee_management_project/manage.py test employee_app --verbosity=2
 
 
 
