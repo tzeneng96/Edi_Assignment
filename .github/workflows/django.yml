@@ -65,7 +65,9 @@ jobs:
         echo "Postgres is up - continuing"
         
     - name: Run Migrations
-      run: python employee_management_project/manage.py migrate
+      run: |
+        python employee_management_project/manage.py makemigrations  # Ensure migrations are created
+        python employee_management_project/manage.py migrate --fake-initial
       
     - name: Running Test Cases 
       run: |
