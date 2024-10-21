@@ -57,6 +57,7 @@ jobs:
           
     - name: Running Test Cases 
       run: |
+        python employee_management_project/manage.py check
         python employee_management_project/manage.py test
 
 
