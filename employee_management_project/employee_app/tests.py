@@ -217,7 +217,7 @@ class TeamEmployeeModelTest(TestCase):
 
         self.team.delete() #Delete team
 
-        self.assertEqual(Team.objects.count(), 1) #Team still in DB
+        self.assertEqual(Team.objects.count(), 0) #Team is deleted
         self.assertEqual(TeamEmployee.objects.count(), 0) #TeamEmployee is deleted
 
     def test_delete_employee_delete_team_employee(self):
@@ -230,7 +230,7 @@ class TeamEmployeeModelTest(TestCase):
 
         self.employee.delete() #Delete employee
 
-        self.assertEqual(Employee.objects.count(), 1) #Employee still in DB
+        self.assertEqual(Employee.objects.count(), 0) #Employee is deleted
         self.assertEqual(TeamEmployee.objects.count(), 0) #TeamEmployee is deleted
 
     def test_team_employee_str(self):
@@ -311,7 +311,7 @@ class WorkArrangementTest(TestCase):
             employee = self.employee,
             percentage = 100
         )
-        expected_str = "John Doe: Full-Time "
+        expected_str = "John Doe: Full-Time"
         self.assertEqual(str(work_arrangement), expected_str)
             
 class TeamSerializerTest(TestCase):
