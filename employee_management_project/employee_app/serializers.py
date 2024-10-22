@@ -12,7 +12,7 @@ class TeamSerializer(serializers.ModelSerializer):
 class WorkArrangementSerializer(serializers.ModelSerializer):
     """Serializer for WorkArrangement model."""
     
-    weekly_hours = serializers.SerializerMethodField()  # Read-only field
+    weekly_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = WorkArrangement

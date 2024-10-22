@@ -68,7 +68,7 @@ class WorkArrangement(models.Model):
     def save(self, *args, **kwargs):
         # Exclude the current arrangement if it's being updated
         other_arrangements = self.employee.work_arrangements.exclude(pk=self.pk)
-
+        
         # Sum percentages of other work arrangements
         total_percentage = sum(arrangement.percentage for arrangement in other_arrangements)
 
