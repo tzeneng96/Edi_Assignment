@@ -33,7 +33,6 @@ class EmployeeModelTest(TestCase):
         self.employee = Employee.objects.create(
             name = 'John Doe',
             employee_id = 'E17006840',
-            team = self.team,
             hourly_rate = 25.00,
             is_team_leader = False
         )
@@ -87,16 +86,6 @@ class EmployeeModelTest(TestCase):
         with self.assertRaises(ValidationError):
             arrangement.save()
 
-    def test_create_employee_without_team(self):
-        #Create an employee without team information throw integrity error
-        with self.assertRaises(IntegrityError):
-            new_employee = Employee.objects.create(
-                name='Jane Doe', 
-                employee_id='E17006841', 
-                hourly_rate=20.00,
-                is_team_leader = False
-            )
-
     def test_employee_str(self):
         #Check if string represent an employee
         expected_str = "John Doe (E17006840)" 
@@ -111,7 +100,6 @@ class TeamLeaderModelTest(TestCase):
         self.employee = Employee.objects.create(
             name = 'John Doe',
             employee_id = 'E17006840',
-            team = team,
             hourly_rate = 25.00,
             is_team_leader = True
         )
@@ -156,14 +144,13 @@ class TeamLeaderModelTest(TestCase):
         self.assertEqual(TeamLeader.objects.count(), 0)
 
     def test_team_leader_str(self):
-        expected_str = "Leader: John Doe - Development"
+        expected_str = "Leader: John Doe - True"
         self.assertEqual(str(self.leader), expected_str)
     
     def test_employee_without_leader_has_no_leader_info(self):
         new_employee = Employee.objects.create(
             name='Jane Doe', 
             employee_id='E17006841', 
-            team=self.employee.team, 
             hourly_rate=20.00,
             is_team_leader = False
         )
@@ -180,7 +167,6 @@ class TeamEmployeeModelTest(TestCase):
         self.employee = Employee.objects.create(
             name='John Doe', 
             employee_id='E17006840', 
-            team=self.team, 
             hourly_rate=20.00,
             is_team_leader = False
         )
@@ -250,7 +236,6 @@ class WorkArrangementTest(TestCase):
         self.employee = Employee.objects.create(
             name='John Doe', 
             employee_id='E17006840', 
-            team=team, 
             hourly_rate=20.00,
             is_team_leader = False
         )
@@ -337,7 +322,6 @@ class WorkArrangementSerializerTest(TestCase):
         self.employee = Employee.objects.create(
             name = "John Doe",
             employee_id = "E17006840",
-            team = self.team,
             hourly_rate = 20,
             is_team_leader = False
         )
@@ -387,7 +371,6 @@ class EmployeeSerializerTestI(TestCase):
         self.employee = Employee.objects.create(
             name = "John Doe",
             employee_id = "E17006840",
-            team = self.team,
             hourly_rate = 20,
             is_team_leader = False
         )
@@ -399,12 +382,19 @@ class EmployeeSerializerTestI(TestCase):
     def test_employee_serialization(self):
         #Test to ensure the Employee serializer outputs correct data.
         serializer = EmployeeSerializer(self.employee)
+
+        expected_teams = [
+        {
+            'id': team_employee.team.id,
+            'name': team_employee.team.name
+        }
+        for team_employee in self.employee.team_membership.all()
+    ]
         expected_data = {
             'id': self.employee.id,
             'name': self.employee.name,
             'employee_id': self.employee.employee_id,
-            'team': self.team.id,
-            'team_name': self.team.name,
+            'teams': expected_teams,
             'hourly_rate': "20.00",
             'is_team_leader': self.employee.is_team_leader,
             'work_arrangements': [WorkArrangementSerializer(self.work_arrangement).data],
@@ -421,7 +411,6 @@ class TeamLeaderSerializerTest(TestCase):
         self.employee = Employee.objects.create(
             name = "John Doe",
             employee_id = "E17006840",
-            team = self.team,
             hourly_rate = 20,
             is_team_leader = True
         )
@@ -448,7 +437,6 @@ class TeamEmployeeSerializerTest(TestCase):
         self.employee = Employee.objects.create(
             name = "John Doe",
             employee_id = "E17006840",
-            team = self.team,
             hourly_rate = 20,
             is_team_leader = True,
         )
@@ -464,7 +452,7 @@ class TeamEmployeeSerializerTest(TestCase):
             'id': self.team_employee.id,
             'team': self.team.id,
             'employee': self.employee.id,
-            'team_name': self.team.name,
+            'team_name': self.team_employee.team.name,  # Ensure this is present
             'employee_name': self.employee.name
         }
         self.assertEqual(serializer.data, expected_data)

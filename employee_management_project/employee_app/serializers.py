@@ -24,21 +24,29 @@ class WorkArrangementSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
     """Serializer for Employee model."""
-    
-    team_name = serializers.ReadOnlyField(source='team.name')  # Get team name as read-only
+    teams = serializers.SerializerMethodField()  # Method field to get teams
     work_arrangements = WorkArrangementSerializer(many=True, read_only=True)  # Nested serializer for arrangements
     monthly_pay = serializers.SerializerMethodField()  # Read-only calculated pay
 
     class Meta:
         model = Employee
         fields = [
-            'id', 'name', 'employee_id', 'team', 'team_name', 
+            'id', 'name', 'employee_id', 'teams',
             'hourly_rate', 'is_team_leader', 'work_arrangements', 'monthly_pay'
         ]
 
     def get_monthly_pay(self, obj):
         # Assuming a standard of 160 working hours per month (40h/week * 4 weeks)
         return obj.calculate_monthly_pay()
+    def get_teams(self, obj):
+        # Get all teams associated with the employee through TeamEmployee
+        return [
+            {
+                'id': team_employee.team.id,
+                'name': team_employee.team.name
+            }
+            for team_employee in obj.team_membership.all()
+        ]
 
 
 class TeamLeaderSerializer(serializers.ModelSerializer):
@@ -53,7 +61,7 @@ class TeamLeaderSerializer(serializers.ModelSerializer):
 
 class TeamEmployeeSerializer(serializers.ModelSerializer):
     """Serializer for TeamEmployee model."""
-    
+
     employee_name = serializers.ReadOnlyField(source='employee.name')  # Read-only employee name
     team_name = serializers.ReadOnlyField(source='team.name')  # Read-only team name
 
