@@ -71,7 +71,7 @@ jobs:
       
     - name: Run tests with coverage
       run: |
-        coverage run employee_management_project/manage.py test
+        coverage run employee_management_project/manage.py test employee_app
         coverage report  # Optional to display in logs
         coverage html  # Generate HTML report
     
