@@ -18,12 +18,12 @@ Make sure you have the following installed:
 - Activate the virtual environment by .\env\Scripts\activate (in windows os)
 - Navigate to app directory by cd .\employee_management_project\
 - Run python manage.py runserver
-- This will help to create:
-  - Database in postgre. Remember to change the user name and password at settings.py,
+- This will help to:
+  - Create database in postgre. Remember to change the user name and password at settings.py,
       if your username and password is difference.
-  - Superuser for you to access the application.
-   - Default username: admin
-   - Default password: password123
+  - Create superuser for you to access the application.
+       - Default username: admin
+       - Default password: password123
   - Seed necessary data in the database for employee app
 
 # Migration
