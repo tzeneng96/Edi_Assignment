@@ -10,11 +10,11 @@ Make sure you have the following installed:
 - An IDE or code editor (e.g., [VS Code](https://code.visualstudio.com/))
 - PostgreSQL (version 16)
 
-1. Installation
+# Installation
    Clone this project repository from github, open the project using VS code at Edi assignment folder level. 
    https://github.com/tzeneng96/Edi_Assignment.git
 
-2. Usage
+# Usage
    Activate the virtual environment by .\env\Scripts\activate (in windows os)
    navigate to app directory by cd .\employee_management_project\
    run python manage.py runserver
@@ -30,7 +30,7 @@ Make sure you have the following installed:
    python manage.py makemigrations
    python manage.py migrate
 
-3. Contact
+# Contact
    For questions, feedback, or collaboration inquiries, feel free to reach out:
 
 - **Email:** anohana11661166@gmail.com  
