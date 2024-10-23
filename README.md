@@ -19,16 +19,16 @@ Make sure you have the following installed:
 - Navigate to app directory by cd .\employee_management_project\
 - Run python manage.py runserver
 - This will help to create:
-   a. database in postgre. Remember to change the user name and password at settings.py,
+  - Database in postgre. Remember to change the user name and password at settings.py,
       if your username and password is difference.
-   b. superuser for you to access the application.
-   - default username: admin
-   - default password: password123
-   c. seed necessary data in the database for employee app
+  - Superuser for you to access the application.
+   - Default username: admin
+   - Default password: password123
+  - Seed necessary data in the database for employee app
 
-   - Migration
-   - python manage.py makemigrations
-   - python manage.py migrate
+# Migration
+- python manage.py makemigrations
+- python manage.py migrate
 
 # Contact
    For questions, feedback, or collaboration inquiries, feel free to reach out:
