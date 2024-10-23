@@ -93,12 +93,12 @@ class EmployeeModelTest(TestCase):
             arrangement.percentage
             for arrangement in self.employee.work_arrangements.all()
         )
-        expected_salary = {
-            Decimal(self.employee.hourly_rate * 160
-                    * (total_working_percentage/100))
-        }
+        expected_salary = (
+            self.employee.hourly_rate * 160 * (total_working_percentage / 100)
+        )
+        
         self.assertEqual(self.employee.calculate_monthly_pay(),
-                         expected_salary)
+                         Decimal(expected_salary))
 
     def test_work_arrangement_exceed_limit(self):
         """Add work arrangements to a full time worker,
