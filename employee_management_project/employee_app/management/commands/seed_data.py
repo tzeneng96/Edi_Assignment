@@ -25,8 +25,10 @@ class Command(BaseCommand):
             conn.autocommit = True
             cursor = conn.cursor()
 
-            cursor.execute("SELECT 1 FROM pg_catalog.pg_database"
-                           "WHERE datname = %s", (db_name, ))
+            cursor.execute(
+                "SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s",
+                (db_name, )
+            )
             exists = cursor.fetchone()
 
             if not exists:
