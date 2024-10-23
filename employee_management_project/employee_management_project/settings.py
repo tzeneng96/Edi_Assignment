@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',      
-    'drf_yasg',
-    'employee_app',   
+    'rest_framework',  #adding rest framework   
+    'drf_yasg', #adding drf_yasg for swagger/openapi documentation
+    'employee_app',  #adding employee app
 ]
 
 MIDDLEWARE = [

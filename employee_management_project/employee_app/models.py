@@ -15,7 +15,6 @@ class Employee(models.Model):
     """Represents an employee in the company."""
     name = models.CharField(max_length=100)
     employee_id = models.CharField(max_length=10, unique=True)
-    team = models.ForeignKey(Team, related_name='employees', on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
     is_team_leader = models.BooleanField(default=False)
 
@@ -42,7 +41,7 @@ class TeamLeader(models.Model):
     employee = models.OneToOneField(Employee, related_name='leader_info', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Leader: {self.employee.name} - {self.employee.team.name}"
+        return f"Leader: {self.employee.name} - {self.employee.is_team_leader}"
 
 
 class TeamEmployee(models.Model):
