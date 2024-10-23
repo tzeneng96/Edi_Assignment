@@ -20,7 +20,7 @@ Make sure you have the following installed:
 - Run python manage.py runserver
 - This will help to create:
    a. database in postgre. Remember to change the user name and password at settings.py,
-   - if your username and password is difference.
+      if your username and password is difference.
    b. superuser for you to access the application.
    - default username: admin
    - default password: password123
