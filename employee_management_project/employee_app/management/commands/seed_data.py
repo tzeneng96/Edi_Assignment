@@ -101,9 +101,9 @@ class Command(BaseCommand):
             emp1 = Employee.objects.first()  # Get the first employee
             emp2 = Employee.objects.last()   # Get the last employee
             # Full-time for Alice
-            WorkArrangement.objects.create(employee=emp1, percentage=100)
+            WorkArrangement.objects.create(employee=emp1, percentage=100, team=1)
             # Part-time for Bob
-            WorkArrangement.objects.create(employee=emp2, percentage=75)
+            WorkArrangement.objects.create(employee=emp2, percentage=75, team=2)
             self.stdout.write(self.style.SUCCESS('Created work arrangements'))
 
         if TeamEmployee.objects.count() == 0:
