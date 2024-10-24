@@ -15,6 +15,7 @@ Make sure you have the following installed:
    https://github.com/tzeneng96/Edi_Assignment.git
 
 # Usage
+- Create a virtual environment by python -m venv env
 - Activate the virtual environment by .\env\Scripts\activate (in windows os)
 - Navigate to app directory by cd .\employee_management_project\
 - Run python manage.py runserver
