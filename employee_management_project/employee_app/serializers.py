@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from .models import Employee, Team, TeamLeader, TeamEmployee, WorkArrangement
 
+
 class TeamSerializer(serializers.ModelSerializer):
     """Serializer for Team model."""
-    
     class Meta:
         model = Team
         fields = ['id', 'name']
@@ -11,7 +11,6 @@ class TeamSerializer(serializers.ModelSerializer):
 
 class WorkArrangementSerializer(serializers.ModelSerializer):
     """Serializer for WorkArrangement model."""
-    
     weekly_hours = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,14 +18,19 @@ class WorkArrangementSerializer(serializers.ModelSerializer):
         fields = ['id', 'employee', 'percentage', 'weekly_hours']
 
     def get_weekly_hours(self, obj):
-        return obj.weekly_hours()  # Calls the model method to calculate weekly hours
+        # Calls the model method to calculate weekly hours
+        return obj.weekly_hours()
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     """Serializer for Employee model."""
-    teams = serializers.SerializerMethodField()  # Method field to get teams
-    work_arrangements = WorkArrangementSerializer(many=True, read_only=True)  # Nested serializer for arrangements
-    monthly_pay = serializers.SerializerMethodField()  # Read-only calculated pay
+    # Method field to get teams
+    teams = serializers.SerializerMethodField()
+    # Nested serializer for arrangements
+    work_arrangements = WorkArrangementSerializer(many=True,
+                                                  read_only=True)
+    # Read-only calculated pay
+    monthly_pay = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
@@ -36,8 +40,10 @@ class EmployeeSerializer(serializers.ModelSerializer):
         ]
 
     def get_monthly_pay(self, obj):
-        # Assuming a standard of 160 working hours per month (40h/week * 4 weeks)
+        # Assuming a standard of 160 working hours per month
+        # (40h/week * 4 weeks)
         return obj.calculate_monthly_pay()
+
     def get_teams(self, obj):
         # Get all teams associated with the employee through TeamEmployee
         return [
@@ -51,8 +57,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 class TeamLeaderSerializer(serializers.ModelSerializer):
     """Serializer for TeamLeader model."""
-    
-    employee_details = EmployeeSerializer(source='employee', read_only=True)  # Nested employee details
+    # Nested employee details
+    employee_details = EmployeeSerializer(source='employee',
+                                          read_only=True)
 
     class Meta:
         model = TeamLeader
@@ -61,9 +68,10 @@ class TeamLeaderSerializer(serializers.ModelSerializer):
 
 class TeamEmployeeSerializer(serializers.ModelSerializer):
     """Serializer for TeamEmployee model."""
-
-    employee_name = serializers.ReadOnlyField(source='employee.name')  # Read-only employee name
-    team_name = serializers.ReadOnlyField(source='team.name')  # Read-only team name
+    # Read-only employee name
+    employee_name = serializers.ReadOnlyField(source='employee.name')
+    # Read-only team name
+    team_name = serializers.ReadOnlyField(source='team.name')
 
     class Meta:
         model = TeamEmployee

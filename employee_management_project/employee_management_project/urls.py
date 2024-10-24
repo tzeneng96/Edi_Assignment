@@ -15,19 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from rest_framework import permissions
 from rest_framework.permissions import AllowAny
-
-
 
 # Define Basic Auth Parameter
 basic_auth = openapi.Parameter(
     'Authorization',  # Parameter name
     openapi.IN_HEADER,  # In the header
-    description="Basic Authentication. Example: 'Basic <base64-encoded-credentials>'",
+    description="Basic Authentication. Example:"
+                "'Basic <base64-encoded-credentials>'",
     type=openapi.TYPE_STRING,
     required=False,  # Not required for the documentation to display
 )
@@ -52,8 +50,8 @@ schema_view._swagger_schema = lambda: {
 }
 
 urlpatterns = [
-    path('', include('employee_app.urls')),\
+    path('', include('employee_app.urls')),
     path('admin/', admin.site.urls),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),
 ]
-
