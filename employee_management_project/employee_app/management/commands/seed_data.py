@@ -73,18 +73,19 @@ class Command(BaseCommand):
         # Your existing seeding logic for Teams, Employees, etc.
         if Team.objects.count() == 0:
             Team.objects.create(name='Development')
-            Team.objects.create(name='Marketing')
+            Team.objects.create(name='DevOps')
             self.stdout.write(self.style.SUCCESS('Created teams'))
 
         if Employee.objects.count() == 0:
             team = Team.objects.first()  # Get the first team
             emp1 = Employee.objects.create(
-                name='Alice',
+                name='John Doe',
                 employee_id='E101',
-                hourly_rate=30.0
+                hourly_rate=30.0,
+                is_team_leader=True
             )
             emp2 = Employee.objects.create(
-                name='Bob',
+                name='Bob Helen',
                 employee_id='E102',
                 hourly_rate=25.0
             )
