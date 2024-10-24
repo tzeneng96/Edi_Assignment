@@ -81,5 +81,9 @@ jobs:
         name: coverage-report
         path: htmlcov/
 
+    - name: PEP8 Checking
+      run: |
+        flake8 employee_management_project/employee_app/ --max-line-length=79  --exclude employee_management_project/employee_app/migrations/
+
 
 

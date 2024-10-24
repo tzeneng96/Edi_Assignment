@@ -96,7 +96,7 @@ class EmployeeModelTest(TestCase):
         expected_salary = (
             self.employee.hourly_rate * 160 * (total_working_percentage / 100)
         )
-        
+
         self.assertEqual(self.employee.calculate_monthly_pay(),
                          Decimal(expected_salary))
 
