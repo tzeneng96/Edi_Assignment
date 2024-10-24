@@ -66,6 +66,8 @@ class WorkArrangement(models.Model):
 
     employee = models.ForeignKey(Employee, related_name='work_arrangements',
                                  on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name='work_arrangements',
+                             on_delete=models.PROTECT, default=7)
     # e.g., 75% for part-time
     percentage = models.PositiveIntegerField(default=100)
 

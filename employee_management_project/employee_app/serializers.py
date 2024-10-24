@@ -15,7 +15,7 @@ class WorkArrangementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkArrangement
-        fields = ['id', 'employee', 'percentage', 'weekly_hours']
+        fields = ['id', 'employee', 'team', 'percentage', 'weekly_hours']
 
     def get_weekly_hours(self, obj):
         # Calls the model method to calculate weekly hours

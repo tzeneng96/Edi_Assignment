@@ -40,7 +40,8 @@ class EmployeeModelTest(TestCase):
         )
         WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=100
+            percentage=100,
+            team=self.team
         )
 
     def test_calculate_full_time_monthly_pay(self):
@@ -56,7 +57,8 @@ class EmployeeModelTest(TestCase):
         WorkArrangement.objects.filter(employee=self.employee).delete()
         WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=75
+            percentage=75,
+            team=self.team
         )
         # 75/100 (percentage) * 4 * 40 (full time)
         expected_salary = self.employee.hourly_rate * 160 * 0.75
@@ -82,11 +84,16 @@ class EmployeeModelTest(TestCase):
         # Create 2 valid work arrangements, altogether 80% work arrangement
         WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=50
+            percentage=50,
+            team=self.team
+        )
+        second_team = Team.objects.create(
+            name="Programmer"
         )
         WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=30
+            percentage=30,
+            team=second_team
         )
         # Loop through all work arrangement percentage
         total_working_percentage = sum(
@@ -103,7 +110,8 @@ class EmployeeModelTest(TestCase):
     def test_work_arrangement_exceed_limit(self):
         """Add work arrangements to a full time worker,
         130% will throw validation error when saving"""
-        arrangement = WorkArrangement(employee=self.employee, percentage=30)
+        arrangement = WorkArrangement(employee=self.employee, percentage=30,
+                                      team=self.team)
         with self.assertRaises(ValidationError):
             arrangement.save()
 
@@ -265,7 +273,7 @@ class TeamEmployeeModelTest(TestCase):
 class WorkArrangementTest(TestCase):
     # Create instance for employee and team
     def setUp(self):
-        Team.objects.create(
+        self.team = Team.objects.create(
             name="Engineering"
         )
         self.employee = Employee.objects.create(
@@ -280,7 +288,8 @@ class WorkArrangementTest(TestCase):
         """Test creating a single valid work arrangement (100%)."""
         work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=100
+            percentage=100,
+            team=self.team
         )
         # Ensure work arrangement is created
         self.assertIsNotNone(work_arrangement.id)
@@ -290,11 +299,15 @@ class WorkArrangementTest(TestCase):
         """Test creating a multiple valid work arrangement (90%)."""
         WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=30
+            percentage=30,
+            team=self.team
+        )
+        second_team = Team.objects.create(
+            name="Graphic"
         )
         # Create another work arrangement instance
         work_arrangement = WorkArrangement(employee=self.employee,
-                                           percentage=60)
+                                           percentage=60, team=second_team)
         try:
             # New work arrangement should be saved, else throw validation error
             work_arrangement.save()
@@ -306,7 +319,8 @@ class WorkArrangementTest(TestCase):
         """Test calculate weekly working hours for an employee"""
         work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=40
+            percentage=40,
+            team=self.team
         )
         # Assuming 40 hours full time a week
         expected_weekly_hours = 40 * (work_arrangement.percentage / 100)
@@ -319,25 +333,58 @@ class WorkArrangementTest(TestCase):
         with self.assertRaises(IntegrityError):
             WorkArrangement.objects.create(
                 employee=self.employee,
-                percentage=-10
+                percentage=-10,
+                team=self.team
             )
 
     def test_work_percentage_exceed_limit(self):
         """Test create work arrangement with
         invalid percentage (greater than 100)"""
-        WorkArrangement.objects.create(employee=self.employee, percentage=90)
+        WorkArrangement.objects.create(employee=self.employee, percentage=90,
+                                       team=self.team)
+        second_team = Team.objects.create(
+            name="Graphic"
+        )
         work_arrangement = WorkArrangement(employee=self.employee,
-                                           percentage=30)
+                                           percentage=30, team=second_team)
         # Save second work arrangement which
         # total up > 100 throw validation error
         with self.assertRaises(ValidationError):
             work_arrangement.save()
 
+    def test_delete_work_arrangement_will_not_delete_team(self):
+        # Try delete work arrangement
+        work_arrangement = WorkArrangement.objects.create(
+            employee=self.employee,
+            percentage=90,
+            team=self.team
+        )
+
+        # Ensure both work arrangement and team exist
+        self.assertEqual(WorkArrangement.objects.count(), 1)
+        self.assertEqual(Team.objects.count(), 1)
+
+        # Delete Work Arrangement
+        work_arrangement.delete()
+
+        # Ensure team is not deleted
+        self.assertEqual(WorkArrangement.objects.count(), 0)
+        self.assertEqual(Team.objects.count(), 1)
+
+    def test_delete_team_raise_error(self):
+        # Test delete team with work arrangement assigned will raise error
+        WorkArrangement.objects.create(employee=self.employee, percentage=90,
+                                       team=self.team)
+        # Delete team object throw error
+        with self.assertRaises(IntegrityError):
+            self.team.delete()
+
     def test_work_arrangement_str(self):
         # Check if string represent work arrangement
         work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=100
+            percentage=100,
+            team=self.team
         )
         expected_str = "John Doe: Full-Time"
         self.assertEqual(str(work_arrangement), expected_str)
@@ -377,12 +424,14 @@ class WorkArrangementSerializerTest(TestCase):
         # serializes a valid WorkArrangement instance
         work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=100
+            percentage=100,
+            team=self.team
         )
         serializer = WorkArrangementSerializer(work_arrangement)
         expected_data = {
             'id': work_arrangement.id,
             'employee': self.employee.id,
+            'team': self.team.id,
             'percentage': 100,
             'weekly_hours': work_arrangement.weekly_hours()
         }
@@ -395,14 +444,16 @@ class WorkArrangementSerializerTest(TestCase):
         with self.assertRaises(ValidationError):
             WorkArrangement.objects.create(
                 employee=self.employee,
-                percentage=120
+                percentage=120,
+                team=self.team
             )
 
     def test_weekly_hours_calculation(self):
         # Test to verify correct weekly hours calculation based on percentage
         work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=50
+            percentage=50,
+            team=self.team
         )
         serializer = WorkArrangementSerializer(work_arrangement)
         expected_weekly_hours = 40.0 * (50 / 100)
@@ -425,7 +476,8 @@ class EmployeeSerializerTestI(TestCase):
         )
         self.work_arrangement = WorkArrangement.objects.create(
             employee=self.employee,
-            percentage=80
+            percentage=80,
+            team=self.team
         )
 
     def test_employee_serialization(self):
