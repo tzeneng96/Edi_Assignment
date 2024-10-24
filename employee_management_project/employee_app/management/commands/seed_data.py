@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 name='John Doe',
                 employee_id='E101',
                 hourly_rate=30.0,
-                is_team_leader = True
+                is_team_leader=True
             )
             emp2 = Employee.objects.create(
                 name='Bob Helen',
