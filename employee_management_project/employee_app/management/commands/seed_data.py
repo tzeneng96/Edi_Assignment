@@ -100,8 +100,8 @@ class Command(BaseCommand):
         if WorkArrangement.objects.count() == 0:
             emp1 = Employee.objects.first()  # Get the first employee
             emp2 = Employee.objects.last()   # Get the last employee
-            team1 = Employee.objects.first()
-            team2 =Employee.objects.last()
+            team1 = Team.objects.first()
+            team2 = Team.objects.last()
             # Full-time for Alice
             WorkArrangement.objects.create(employee=emp1, percentage=100, team=team1)
             # Part-time for Bob
