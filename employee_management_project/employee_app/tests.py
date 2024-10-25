@@ -128,7 +128,7 @@ class TeamLeaderModelTest(TestCase):
             name='John Doe',
             employee_id='E17006840',
             hourly_rate=25.00,
-            is_team_leader=True
+            is_team_leader=False
         )
         self.leader = TeamLeader.objects.create(
             employee=self.employee
@@ -172,6 +172,17 @@ class TeamLeaderModelTest(TestCase):
         # Verify both the employee and the team leader are deleted
         self.assertEqual(Employee.objects.count(), 0)
         self.assertEqual(TeamLeader.objects.count(), 0)
+
+    def test_delete_team_leader_update_employee_status(self):
+        """Delete team leader set is_team_leader False"""
+        # Verify current employee is a leader
+        self.assertTrue(self.employee.is_team_leader)
+
+        # Delete leader
+        self.leader.delete()
+
+        # Verify current employee is not a leader
+        self.assertFalse(self.employee.is_team_leader)
 
     def test_team_leader_str(self):
         expected_str = "Leader: John Doe - True"
@@ -521,7 +532,7 @@ class TeamLeaderSerializerTest(TestCase):
             employee=self.employee
         )
 
-    def team_leader_serialization(self):
+    def test_team_leader_serialization(self):
         # Test to ensure Team Employee Serializer outputs correct data
         serializer = TeamLeaderSerializer(self.team_leader)
         expected_data = {
