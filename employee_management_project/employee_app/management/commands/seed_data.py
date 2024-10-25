@@ -87,7 +87,8 @@ class Command(BaseCommand):
             emp2 = Employee.objects.create(
                 name='Bob Helen',
                 employee_id='E102',
-                hourly_rate=25.0
+                hourly_rate=25.0,
+                is_team_leader=False
             )
             self.stdout.write(self.style.SUCCESS('Created employees'))
 

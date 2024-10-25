@@ -44,6 +44,18 @@ class TeamLeader(models.Model):
     employee = models.OneToOneField(Employee, related_name='leader_info',
                                     on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        """Override save method to update employee's is_team_leader field."""
+        self.employee.is_team_leader = True
+        self.employee.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Unset employee's is_team_leader when TeamLeader is deleted."""
+        self.employee.is_team_leader = False
+        self.employee.save()
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"Leader: {self.employee.name} - {self.employee.is_team_leader}"
 
